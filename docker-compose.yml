@@ -1,0 +1,31 @@
+version: '3.5'
+
+services:
+  mongo:
+    image: mongo
+    ports:
+      - 27017:27017
+    networks:
+      - chat-network
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: 'npm run dev'
+    volumes:
+      - '.:/usr/src/app'
+    ports:
+      - '3000:3000'
+    environment:
+      - NODE_ENV=development
+      - PORT=3000
+      - MONGOLAB_URI=mongodb://192.168.224.1/chat_dev
+    networks:
+      - chat-network
+    depends_on:
+      - mongo
+
+
+networks:
+  chat-network:
+    driver: bridge
