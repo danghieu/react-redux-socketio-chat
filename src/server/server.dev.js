@@ -23,7 +23,7 @@ require('../../config/passport')(passport);
 import SocketIo from 'socket.io';
 const app = express();
 //set env vars
-process.env.MONGOLAB_URI = process.env.MONGOLAB_URI || 'mongodb://localhost/chat_dev';
+process.env.MONGOLAB_URI = process.env.MONGOLAB_URI || 'mongodb://danghieu193:Danghieu19#@ds131814.mlab.com:31814/chat';
 process.env.PORT = process.env.PORT || 3000;
 
 // connect our DB
@@ -52,7 +52,7 @@ app.use('/api', messageRouter);
 app.use('/api', usersRouter);
 app.use('/api', channelRouter);
 
-app.use('/', express.static(path.join(__dirname, '..', 'static')));
+// app.use('/', express.static(path.join(__dirname, '..', 'static')));
 
 app.get('/*', function(req, res) {
   const history = createHistory()
@@ -68,7 +68,7 @@ app.get('/*', function(req, res) {
         }
       }
     }
-    const store = configureStore(initialState);
+    // const store = configureStore(initialState);
     // console.log(redirectLocation);
     // if(redirectLocation) {
     //   return res.status(302).end(redirectLocation);
@@ -83,18 +83,18 @@ app.get('/*', function(req, res) {
     if(!renderProps) {
       return res.status(404).end('Not found');
     }
-    const InitialView = (
-      <Provider className="root" store={store}>
-        <div style={{height: '100%'}}>
-          <RouterContext {...renderProps} />
-          {process.env.NODE_ENV !== 'production' && <DevTools />}
-        </div>
-      </Provider>
-    );
+    // const InitialView = (
+    //   <Provider className="root" store={store}>
+    //     <div style={{height: '100%'}}>
+    //       <RouterContext {...renderProps} />
+    //       {process.env.NODE_ENV !== 'production' && <DevTools />}
+    //     </div>
+    //   </Provider>
+    // );
 
-    const finalState = store.getState();
-    const html = renderToString(InitialView)
-    res.status(200).end(renderFullPage(html, finalState));
+    // const finalState = store.getState();
+    // const html = renderToString(InitialView)
+    // res.status(200).end(renderFullPage(html, finalState));
   })
 })
 
@@ -106,7 +106,8 @@ const server = app.listen(process.env.PORT, function(err) {
   console.log('server listening on port: %s', process.env.PORT);
 });
 
-const io = new SocketIo(server, {path: '/api/chat'})
+// const io = new SocketIo(server, {path: '/api/chat'})
+const io = require('socket.io')(server);
 const socketEvents = require('./socketEvents')(io);
 
 function renderFullPage(html, initialState) {

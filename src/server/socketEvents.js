@@ -1,18 +1,27 @@
 exports = module.exports = function(io) {
   io.on('connection', function(socket) {
-    socket.join('Lobby');
+    console.log('connect: ', socket.id);
+    // socket.join('Lobby');
     socket.on('chat mounted', function(user) {
       // TODO: Does the server need to know the user?
       socket.emit('receive socket', socket.id)
     })
     socket.on('leave channel', function(channel) {
+      console.log('leave channel', channel);
+      if (channel == null) {
+        return;
+    } 
       socket.leave(channel)
     })
     socket.on('join channel', function(channel) {
+      console.log('join channel', channel);
       socket.join(channel.name)
     })
     socket.on('new message', function(msg) {
-      socket.broadcast.to(msg.channelID).emit('new bc message', msg);
+      console.log('new message: ', msg);
+      // socket.to(msg.channel).emit('new bc message', msg);
+      io.sockets.in(msg.channel).emit('new bc message', msg);
+      // socket.broadcast.emit('new bc message', msg);
     });
     socket.on('new channel', function(channel) {
       socket.broadcast.emit('new channel', channel)
